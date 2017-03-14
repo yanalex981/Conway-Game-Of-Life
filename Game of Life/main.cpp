@@ -11,8 +11,9 @@
 
 #include "ConwayModel.hpp"
 
+// draws live cells
 void render_buffer(ConwayModel &model, sf::RenderWindow &window)
-{
+{	// iterate through the live ones and draw them
 	for (auto &v : model.getLiveOnes())
 	{
 		float rect_width = 6;
@@ -21,7 +22,7 @@ void render_buffer(ConwayModel &model, sf::RenderWindow &window)
 		auto y = std::get<1>(v);
 		sf::RectangleShape rect(sf::Vector2f(rect_width, rect_height));
 		rect.setPosition(x * rect_width, y * rect_height);
-		rect.setFillColor(sf::Color(171, 220, 24));
+		rect.setFillColor(sf::Color(171, 220, 24)); // cells are colored yellow-green
 		//rect.setOutlineColor(sf::Color(0, 0, 0, 0xFF));
 		//rect.setOutlineThickness(1.0f);
 		window.draw(rect);
@@ -36,6 +37,7 @@ int main()
 
 	bool paused = true;
 
+	// testing with a default pattern
 	model.animate(43, 43);
 	model.animate(44, 43);
 	model.animate(43, 44);
@@ -55,23 +57,23 @@ int main()
 	while (window.isOpen())
 	{
 		sf::Event event;
-
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
 
 			if (event.type == sf::Event::KeyReleased)
-			{
+			{	// space pauses and unpauses the game
 				if (event.key.code == sf::Keyboard::Space)
 					paused = !paused;
 
+				// F steps forward 1 iteration
 				if (event.key.code == sf::Keyboard::F)
 					model.next();
 			}
 
 			if (event.type == sf::Event::MouseButtonReleased)
-			{
+			{	// left click draws cells
 				if (event.mouseButton.button == sf::Mouse::Button::Left)
 				{
 					auto p = sf::Mouse::getPosition(window);
@@ -87,11 +89,11 @@ int main()
 		//clock.restart();
 		render_buffer(model, window);
 		
-		if (!paused)
+		if (!paused) // if not paused, run simulation as fast as possible
 			model.next();
 		//std::cout << "FT: " << clock.getElapsedTime().asMilliseconds() << std::endl;
 
-		// draw mouse stuff
+		// draw square outline under mouse to indicate which cell would be drawn if clicked
 		auto p = sf::Mouse::getPosition(window);
 		sf::RectangleShape hover(sf::Vector2f(6.0f, 6.0f));
 		hover.setPosition(sf::Vector2f((p.x / 6) * 6.0f, (p.y / 6) * 6.0f));

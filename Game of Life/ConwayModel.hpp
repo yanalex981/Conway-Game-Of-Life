@@ -9,6 +9,7 @@
 
 namespace std {
 	// change long long to long
+	// needed because tuple<long,long> do not have a default hash implementation
 	template <> struct hash<std::tuple<long, long>>
 	{
 		inline size_t operator()(const std::tuple<long, long> &t) const
@@ -18,10 +19,11 @@ namespace std {
 	};
 }
 
+// Model of the universe, stores all live cells
 class ConwayModel
 {
-	std::unordered_set<std::tuple<long, long>> alive;
-	std::unordered_map<std::tuple<long, long>, size_t> neighbors;
+	std::unordered_set<std::tuple<long, long>> alive; // stores live cells
+	std::unordered_map<std::tuple<long, long>, size_t> neighbors; // keeps track of neighboring cells of live cells
 
 	ConwayModel next(ConwayModel &prev);
 
